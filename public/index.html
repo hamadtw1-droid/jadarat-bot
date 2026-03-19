@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توطين الوظائف</title>
+    
+    <!-- PWA & Mobile Icons Setup -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d8364">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    
+    <!-- Google Fonts for Modern Arabic Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>توطين <strong>للوظائف</strong></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">الرئيسية</a></li>
+            <li><a href="#">تصفح الوظائف</a></li>
+            <li><a href="#">عن المنصة</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn btn-outline">تسجيل دخول</button>
+            <button class="btn btn-primary">حساب جديد</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>انطلق نحو <span>مستقبلك المهني</span> بثقة</h1>
+            <p>منصتك الأولى لاكتشاف أحدث الوظائف المسحوبة فوراً من كبرى المنصات الحكومية كجدارات.</p>
+            
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن مسمى وظيفي، أو مدينة، أو شركة...">
+                <button class="btn btn-primary" id="searchBtn">ابحث الآن</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content: Job Listings -->
+    <main class="job-board">
+        <div class="section-title">
+            <h2>أحدث الفرص الوظيفية</h2>
+            <p>يتم جلب هذه الفرص وتحديثها باستمرار من المنصات الموثوقة.</p>
+        </div>
+
+        <div class="jobs-controls">
+            <div class="results-count" id="resultsCount">جاري تحميل الوظائف...</div>
+            <div class="filter-sort">
+                <select id="cityFilter" class="filter-select">
+                    <option value="all">📍 جميع المدن</option>
+                    <!-- سيارات تعبئة المدن برمجياً من الوظائف المتاحة -->
+                </select>
+                <select id="sortFilter" class="filter-select">
+                    <option>⚡ الأحدث أولاً</option>
+                    <option>🔤 حسب الأبجدية</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- The container where scripts.js will inject jobs -->
+        <div id="jobsContainer" class="jobs-grid">
+            <!-- Job cards will appear here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 جميع الحقوق محفوظة - منصة توطين للوظائف الموحدة.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
