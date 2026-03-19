@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const cron = require('node-cron');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 const fs = require('fs');
 const path = require('path');
 
@@ -27,15 +29,17 @@ async function runScraper() {
     console.log(`[${new Date().toLocaleString('ar-SA')}] 🔄 بدء عملية التحديث الآلي للوظائف...`);
     try {
         const browser = await puppeteer.launch({ 
-            headless: 'new',
+            headless: 'new', // نعود للوضع المخفي لأننا سنرفعه للمحرك السحابي
             args: [
                 '--no-sandbox', 
                 '--disable-setuid-sandbox', 
-                '--disable-blink-features=AutomationControlled',
-                '--window-size=1920,1080'
+                '--disable-blink-features=AutomationControlled'
             ]
         }); 
         const page = await browser.newPage();
+        
+        // تغيير هوية المتصفح ليبدو كأنه إنسان
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         await page.setExtraHTTPHeaders({
