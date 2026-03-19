@@ -28,10 +28,16 @@ async function runScraper() {
     try {
         const browser = await puppeteer.launch({ 
             headless: 'new',
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: [
+                '--no-sandbox', 
+                '--disable-setuid-sandbox', 
+                '--disable-blink-features=AutomationControlled',
+                '--window-size=1920,1080'
+            ]
         }); 
         const page = await browser.newPage();
         
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         await page.setExtraHTTPHeaders({
             'Accept-Language': 'ar-SA,ar;q=0.9,en;q=0.8'
         });
