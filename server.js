@@ -119,10 +119,13 @@ async function runScraper() {
                 return data;
             }, target.category);
             
-            allJobData = allJobData.concat(scrapedData);
+            // أخذ أفضل 25 وظيفة من كل قطاع لضمان التوازن
+            const uniqueSectorJobs = scrapedData.filter((v, i, a) => a.findIndex(v2 => (v2.title === v.title && v2.company === v.company)) === i).slice(0, 25);
+            allJobData = allJobData.concat(uniqueSectorJobs);
         }
 
-        const jobData = allJobData.filter((v, i, a) => a.findIndex(v2 => (v2.title === v.title && v2.company === v.company)) === i).slice(0, 40);
+        // دمج ومزج الوظائف التعاقدية مع الخاصة لكي تظهر للمستخدم
+        const jobData = allJobData; // العدد النهائي سيكون 50 (25 خاص + 25 حكومي)
 
         if(jobData.length > 0) {
             let oldJobs = [];
