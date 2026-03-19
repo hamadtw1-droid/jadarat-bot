@@ -160,8 +160,49 @@ async function runScraper() {
         });
 
         if(jobData.length > 0) {
+            // أولاً: مقارنة الوظائف القديمة بالجديدة
+            let oldJobs = [];
+            if (fs.existsSync(jobsFile)) {
+                oldJobs = JSON.parse(fs.readFileSync(jobsFile));
+            }
+
+            // استخراج "الوظائف الجديدة فقط" والتي لم تكن موجودة في الدفعة السابقة
+            const newJobs = jobData.filter(newJob => {
+                return !oldJobs.some(oldJob => oldJob.title === newJob.title && oldJob.company === newJob.company);
+            });
+
             fs.writeFileSync(jobsFile, JSON.stringify(jobData, null, 2));
-            console.log(`✅ تم تحديث الوظائف بنجاح! إجمالي: ${jobData.length} وظيفة جديدة (الروابط + المدن جاهزة).`);
+            console.log(`✅ تم تحديث الوظائف بنجاح! إجمالي: ${jobData.length} وظيفة (واكتشفنا ${newJobs.length} وظائف جديدة تماماً).`);
+
+            // نظام إرسال الإشعارات لتليغرام
+            const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8628316864:AAGIns2VGw7pIgUDHC9DAvIAn7McxQOFebk";
+            const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "1411425836";
+            
+            if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID && newJobs.length > 0 && oldJobs.length > 0) {
+                console.log(`🚀 جاري إرسال إشعارات التليغرام للوظائف الجديدة وعددهم (${newJobs.length})...`);
+                
+                // إرسالها بفاصل زمني لتجنب حظر رسائل تليغرام لكثرتها
+                for (const [i, job] of newJobs.entries()) {
+                    setTimeout(async () => {
+                        const message = `🚨 وظيفة مطروحة للتو\n▪️ المسمى: ${job.title}\n▪️ القطاع: ${job.company}\n📍 المدينة: ${job.location}\n\n🔗 للتقديم السريع عبر جدارات:\n${job.url || 'https://jadarat.sa/'}`;
+                        
+                        try {
+                            const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    chat_id: TELEGRAM_CHAT_ID,
+                                    text: message,
+                                    disable_web_page_preview: true
+                                })
+                            });
+                            if(response.ok) console.log(`📨 تم إرسال إشعار لتليغرام بنجاح للوظيفة: ${job.title}`);
+                        } catch(e) {
+                            console.error('❌ فشل إرسال الإشعار', e);
+                        }
+                    }, i * 3000); // 3 ثواني تأخير بين كل رسالة
+                }
+            }
         } else {
             console.log(`⚠️ لم يتمكن المحرك من العثور على نصوص وظائف في هذه الجولة.`);
         }
